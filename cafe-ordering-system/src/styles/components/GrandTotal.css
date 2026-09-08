@@ -1,0 +1,29 @@
+/* GrandTotal.css - Styles for grand total display */
+
+.grand-total {
+  background: linear-gradient(135deg, #6f4e37, #8b6b4d);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.total-amount {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.total-label {
+  opacity: 0.9;
+}
+
+.total-value {
+  font-size: 2rem;
+}
+
+.order-count {
+  font-size: 0.95rem;
+  opacity: 0.8;
+}

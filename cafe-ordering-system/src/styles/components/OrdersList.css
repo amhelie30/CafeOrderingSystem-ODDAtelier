@@ -1,0 +1,69 @@
+/* OrdersList.css - Styles for orders list */
+
+.orders-list {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.orders-container {
+  display: flex;          /* ← This was missing "flex" */
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem;
+  background: #f8f4e9;
+  border-radius: 8px;
+  border-left: 4px solid #6f4e37;
+}
+
+.order-number {
+  font-weight: 700;
+  color: #6f4e37;
+  margin-right: 1rem;
+}
+
+.order-details {
+  flex: 1;
+}
+
+.order-main {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.order-drink {
+  font-weight: 600;
+}
+
+.order-size {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.order-addons {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.2rem;
+}
+
+.order-customer {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 0.2rem;
+}
+
+.order-total {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #6f4e37;
+}

@@ -1,0 +1,35 @@
+.size-selector {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.size-options {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.size-btn {
+  flex: 1;
+  padding: 0.8rem;
+  border: 2px solid #e8d5c4;
+  border-radius: 8px;
+  background: white;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.size-btn:hover {
+  border-color: #6f4e37;
+  transform: scale(1.05);
+}
+
+.size-btn.selected {
+  background: #6f4e37;
+  color: white;
+  border-color: #6f4e37;
+}

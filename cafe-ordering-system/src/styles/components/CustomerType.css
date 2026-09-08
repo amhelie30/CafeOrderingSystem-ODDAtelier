@@ -1,0 +1,46 @@
+.customer-type {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.customer-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.customer-btn {
+  padding: 0.8rem;
+  border: 2px solid #e8d5c4;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.customer-btn:hover {
+  border-color: #6f4e37;
+  transform: translateY(-2px);
+}
+
+.customer-btn.selected {
+  border-color: #6f4e37;
+  background: #f8f4e9;
+  box-shadow: 0 0 0 3px rgba(111, 78, 55, 0.2);
+}
+
+.customer-name {
+  display: block;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+.customer-discount {
+  display: block;
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.2rem;
+}

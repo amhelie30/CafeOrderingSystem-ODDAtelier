@@ -1,0 +1,50 @@
+.addon-selector {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.addon-instruction {
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.addon-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.addon-btn {
+  padding: 0.8rem;
+  border: 2px solid #e8d5c4;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.addon-btn:hover {
+  border-color: #6f4e37;
+  transform: translateY(-2px);
+}
+
+.addon-btn.selected {
+  border-color: #4CAF50;
+  background: #e8f5e9;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+.addon-name {
+  font-weight: 500;
+  color: #2c2c2c;
+}
+
+.addon-price {
+  color: #4CAF50;
+  font-weight: 600;
+}
