@@ -1,12 +1,10 @@
 /**
- * App.js - Main component that orchestrates the entire cafe ordering system
- * Updated to work with the new table-based drink menu
+ * App.js - Main component with complete order management
  */
 
 import React, { useState } from 'react';
 import './App.css';
 
-// Import components
 import DrinkMenu from './components/DrinkMenu';
 import CustomerType from './components/CustomerType';
 import AddOnSelector from './components/AddOnSelector';
@@ -14,63 +12,103 @@ import OrderSummary from './components/OrderSummary';
 import OrdersList from './components/OrdersList';
 import GrandTotal from './components/GrandTotal';
 
-// Import data and utilities
 import { drinkPrices, addOnPrices, customerTypes, drinkNames, sizeNames, addOnNames } from './data/menuData';
-import { calculateOrderTotal, isValidOrder } from './utils/calculations';
+import { calculateOrderTotal } from './utils/calculations';
 
 function App() {
-  // === STATE MANAGEMENT ===
   const [selectedDrink, setSelectedDrink] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedCustomer, setSelectedCustomer] = useState(0);
   const [selectedAddOns, setSelectedAddOns] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [grandTotal, setGrandTotal] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // === NEW: Handle adding a drink+size to order ===
+  // ===== HELPER: Calculate Grand Total from Orders =====
+  const calculateGrandTotal = (orderList) => {
+    return orderList.reduce((sum, order) => sum + order.total, 0);
+  };
+
+  // ===== HANDLE ADD TO ORDER =====
   const handleAddToOrder = ({ drinkIndex, sizeIndex, drinkName, sizeName, price }) => {
-    // Set the current selection for the order summary
     setSelectedDrink(drinkIndex);
     setSelectedSize(sizeIndex);
     
-    // Automatically place the order after a brief delay
-    // This creates a smooth experience where clicking "+" adds to cart
+    const totals = calculateOrderTotal(
+      drinkIndex,
+      sizeIndex,
+      selectedAddOns,
+      drinkPrices,
+      addOnPrices,
+      selectedCustomer
+    );
+
+    const newOrder = {
+      id: Date.now() + Math.random(),
+      drink: drinkName,
+      size: sizeName,
+      drinkIndex: drinkIndex,
+      sizeIndex: sizeIndex,
+      customerType: customerTypes[selectedCustomer],
+      addOns: selectedAddOns.map(index => addOnNames[index]),
+      addOnIndices: [...selectedAddOns],
+      total: totals.total,
+      price: price
+    };
+
+    // Add the new order
+    const updatedOrders = [...orders, newOrder];
+    setOrders(updatedOrders);
+    
+    // ✅ Recalculate grand total from scratch
+    // This ensures the grand total always matches the sum of all orders
+    const newGrandTotal = calculateGrandTotal(updatedOrders);
+    
+    // We need to update GrandTotal component
+    // We'll use a ref or state to pass this down
+    // For now, we'll use the state setter
+
+    setShowSuccess(true);
+
+    setSelectedDrink(null);
+    setSelectedSize(null);
+    setSelectedAddOns([]);
+
     setTimeout(() => {
-      // Check if a customer type is selected
-      const totals = calculateOrderTotal(
-        drinkIndex,
-        sizeIndex,
-        selectedAddOns,
-        drinkPrices,
-        addOnPrices,
-        selectedCustomer
-      );
-
-      const newOrder = {
-        drink: drinkName,
-        size: sizeName,
-        customerType: customerTypes[selectedCustomer],
-        addOns: selectedAddOns.map(index => addOnNames[index]),
-        total: totals.total
-      };
-
-      setOrders(prev => [...prev, newOrder]);
-      setGrandTotal(prev => prev + totals.total);
-      setShowSuccess(true);
-
-      // Reset selections (but keep customer type)
-      setSelectedDrink(null);
-      setSelectedSize(null);
-      setSelectedAddOns([]);
-
-      setTimeout(() => {
-        setShowSuccess(false);
-      }, 2000);
-    }, 100);
+      setShowSuccess(false);
+    }, 2000);
   };
 
-  // === EVENT HANDLERS ===
+  // ===== HANDLE CANCEL ORDER (REMOVE ALL) =====
+  const handleRemoveFromOrder = ({ drinkIndex, sizeIndex, removeAll }) => {
+    let updatedOrders;
+
+    if (removeAll) {
+      // Remove ALL orders with this drink+size combination
+      updatedOrders = orders.filter(
+        order => !(order.drinkIndex === drinkIndex && order.sizeIndex === sizeIndex)
+      );
+    } else {
+      // Single removal (for backward compatibility)
+      const orderIndex = orders.findLastIndex(
+        order => order.drinkIndex === drinkIndex && order.sizeIndex === sizeIndex
+      );
+
+      if (orderIndex !== -1) {
+        updatedOrders = [...orders];
+        updatedOrders.splice(orderIndex, 1);
+      } else {
+        updatedOrders = orders;
+      }
+    }
+
+    // ✅ Update orders and recalculate grand total
+    setOrders(updatedOrders);
+    
+    // Grand total will be recalculated in the GrandTotal component
+    // We pass orders and it calculates the sum
+  };
+
+  // ===== EVENT HANDLERS =====
   const handleSelectCustomer = (index) => {
     setSelectedCustomer(index);
     setShowSuccess(false);
@@ -90,7 +128,6 @@ function App() {
   const handleReset = () => {
     if (window.confirm('Are you sure you want to reset all orders?')) {
       setOrders([]);
-      setGrandTotal(0);
       setSelectedDrink(null);
       setSelectedSize(null);
       setSelectedAddOns([]);
@@ -99,7 +136,10 @@ function App() {
     }
   };
 
-  // === RENDER ===
+  // ===== RECALCULATE GRAND TOTAL =====
+  const grandTotal = calculateGrandTotal(orders);
+
+  // ===== RENDER =====
   return (
     <div className="app">
       <header className="app-header">
@@ -108,10 +148,11 @@ function App() {
       </header>
 
       <div className="main-content">
-        {/* LEFT PANEL: Selection Area */}
         <div className="left-panel">
-          {/* NEW: DrinkMenu with integrated size selection */}
-          <DrinkMenu onAddToOrder={handleAddToOrder} />
+          <DrinkMenu 
+            onAddToOrder={handleAddToOrder}
+            onRemoveFromOrder={handleRemoveFromOrder}
+          />
           
           <CustomerType 
             selectedCustomer={selectedCustomer} 
@@ -123,7 +164,6 @@ function App() {
             onToggleAddOn={handleToggleAddOn} 
           />
 
-          {/* Action Buttons */}
           <div className="action-buttons">
             <button 
               className="reset-btn" 
@@ -140,7 +180,6 @@ function App() {
           )}
         </div>
 
-        {/* RIGHT PANEL: Summary Area */}
         <div className="right-panel">
           <OrderSummary 
             selectedDrink={selectedDrink}
