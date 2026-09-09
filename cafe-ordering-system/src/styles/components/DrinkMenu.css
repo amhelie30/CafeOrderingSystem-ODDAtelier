@@ -97,7 +97,7 @@
   text-align: center;
   vertical-align: middle;
   width: 23.33%;
-  height: 65px;
+  height: 60px; /* ✅ Slightly reduced */
   position: relative;
 }
 
@@ -106,27 +106,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  height: 45px;
-  min-height: 45px;
-  max-height: 45px;
+  gap: 6px; /* ✅ Reduced from 10px to 6px */
+  height: 40px;
+  min-height: 40px;
+  max-height: 40px;
   flex-wrap: nowrap;
   flex-shrink: 0;
   position: relative;
   padding-right: 35px;
 }
 
-/* ===== ADD BUTTON ===== */
+/* ===== ADD BUTTON - SMALLER ===== */
 .add-btn {
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  max-width: 32px;
+  width: 26px; /* ✅ Reduced from 32px */
+  height: 26px; /* ✅ Reduced from 32px */
+  min-width: 26px;
+  max-width: 26px;
   border-radius: 50%;
   border: 2px solid #d4c5b8;
   background: white;
   color: #6f4e37;
-  font-size: 18px;
+  font-size: 15px; /* ✅ Reduced from 18px */
   font-weight: 700;
   cursor: pointer;
   transition: all 0.25s ease;
@@ -174,8 +174,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 28px; /* ✅ Slightly reduced */
+  height: 28px; /* ✅ Slightly reduced */
   flex-shrink: 0;
   z-index: 10;
   pointer-events: none;
@@ -185,14 +185,14 @@
 .quantity-badge {
   background: #4CAF50;
   color: white;
-  font-size: 0.75rem;
+  font-size: 0.7rem; /* ✅ Slightly smaller */
   font-weight: 700;
-  width: 22px;
-  height: 22px;
-  min-width: 22px;
-  min-height: 22px;
-  max-width: 22px;
-  max-height: 22px;
+  width: 20px; /* ✅ Reduced from 22px */
+  height: 20px; /* ✅ Reduced from 22px */
+  min-width: 20px;
+  min-height: 20px;
+  max-width: 20px;
+  max-height: 20px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
@@ -208,17 +208,17 @@
   position: absolute;
   top: -4px;
   right: -4px;
-  width: 16px;
-  height: 16px;
-  min-width: 16px;
-  min-height: 16px;
-  max-width: 16px;
-  max-height: 16px;
+  width: 14px; /* ✅ Slightly reduced */
+  height: 14px; /* ✅ Slightly reduced */
+  min-width: 14px;
+  min-height: 14px;
+  max-width: 14px;
+  max-height: 14px;
   border-radius: 50%;
   border: 2px solid #a5d6a7;
   background: white;
   color: #66bb6a;
-  font-size: 10px;
+  font-size: 9px; /* ✅ Slightly smaller */
   font-weight: 900;
   cursor: pointer;
   transition: all 0.25s ease;
@@ -308,23 +308,23 @@
   
   .size-cell {
     padding: 8px 5px;
-    height: 55px;
+    height: 50px;
   }
   
   .size-option {
-    height: 40px;
-    min-height: 40px;
-    max-height: 40px;
-    gap: 8px;
+    height: 36px;
+    min-height: 36px;
+    max-height: 36px;
+    gap: 5px;
     padding-right: 30px;
   }
   
   .add-btn {
-    width: 28px;
-    height: 28px;
-    min-width: 28px;
-    max-width: 28px;
-    font-size: 16px;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    max-width: 22px;
+    font-size: 13px;
   }
   
   .size-price {
@@ -334,29 +334,29 @@
   }
   
   .badge-wrapper {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     right: 6px;
   }
   
   .quantity-badge {
-    width: 20px;
-    height: 20px;
-    min-width: 20px;
-    min-height: 20px;
-    max-width: 20px;
-    max-height: 20px;
-    font-size: 0.7rem;
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    min-height: 18px;
+    max-width: 18px;
+    max-height: 18px;
+    font-size: 0.65rem;
   }
   
   .badge-cancel-btn {
-    width: 14px;
-    height: 14px;
-    min-width: 14px;
-    min-height: 14px;
-    max-width: 14px;
-    max-height: 14px;
-    font-size: 8px;
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+    min-height: 12px;
+    max-width: 12px;
+    max-height: 12px;
+    font-size: 7px;
     top: -3px;
     right: -3px;
     border-width: 2px;
@@ -380,23 +380,24 @@
   
   .size-cell {
     padding: 6px 3px;
-    height: 48px;
+    height: 44px;
   }
   
   .size-option {
-    height: 35px;
-    min-height: 35px;
-    max-height: 35px;
-    gap: 6px;
+    height: 32px;
+    min-height: 32px;
+    max-height: 32px;
+    gap: 4px;
     padding-right: 25px;
   }
   
   .add-btn {
-    width: 24px;
-    height: 24px;
-    min-width: 24px;
-    max-width: 24px;
-    font-size: 14px;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    max-width: 20px;
+    font-size: 12px;
+    border-width: 1.5px;
   }
   
   .size-price {
@@ -406,29 +407,29 @@
   }
   
   .badge-wrapper {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     right: 4px;
   }
   
   .quantity-badge {
-    width: 18px;
-    height: 18px;
-    min-width: 18px;
-    min-height: 18px;
-    max-width: 18px;
-    max-height: 18px;
-    font-size: 0.6rem;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+    max-width: 16px;
+    max-height: 16px;
+    font-size: 0.55rem;
   }
   
   .badge-cancel-btn {
-    width: 12px;
-    height: 12px;
-    min-width: 12px;
-    min-height: 12px;
-    max-width: 12px;
-    max-height: 12px;
-    font-size: 7px;
+    width: 11px;
+    height: 11px;
+    min-width: 11px;
+    min-height: 11px;
+    max-width: 11px;
+    max-height: 11px;
+    font-size: 6px;
     top: -2px;
     right: -2px;
     border-width: 1.5px;

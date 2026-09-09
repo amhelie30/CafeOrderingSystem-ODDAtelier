@@ -143,7 +143,7 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>☕ Brew Haven Cafe</h1>
+        <h1>☕ The ODD Atelier </h1>
         <p className="subtitle">Order your favorite drinks with custom add-ons</p>
       </header>
 
