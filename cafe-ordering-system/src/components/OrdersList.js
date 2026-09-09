@@ -23,7 +23,7 @@ function OrdersList({ orders }) {
       <h2 className="section-title">All Orders</h2>
       <div className="orders-container">
         {orders.map((order, index) => (
-          <div key={index} className="order-item">
+          <div key={order.id || index} className="order-item">
             <div className="order-number">#{index + 1}</div>
             <div className="order-details">
               <div className="order-main">

@@ -1,5 +1,6 @@
 /**
  * DrinkMenu.js - Component for displaying drinks in a table format
+ * Complete working version with proper add/remove functionality
  */
 
 import React, { useState } from 'react';
@@ -123,7 +124,8 @@ function DrinkMenu({ onAddToOrder, onRemoveFromOrder }) {
       </div>
 
       <div className="menu-tip">
-        💡 Click <strong>+</strong> to add more.
+        💡 Click <strong>+</strong> to add, click the <strong>✕</strong> on the badge to cancel all orders for that size
+      </div>
     </div>
   );
 }
