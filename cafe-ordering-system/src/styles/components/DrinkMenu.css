@@ -1,61 +1,263 @@
+/**
+ * DrinkMenu.css - Styles for the table-based drink menu
+ */
+
 .drink-menu {
   background: white;
   padding: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
 }
 
-.drink-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.8rem;
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #6f4e37;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #e8d5c4;
+  padding-bottom: 0.5rem;
 }
 
-.drink-card {
-  padding: 1rem;
-  border: 2px solid #e8d5c4;
-  border-radius: 8px;
-  background: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
+/* ===== TABLE STYLES ===== */
+.menu-table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.menu-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 500px;
+}
+
+/* Table Header */
+.menu-table thead {
+  background: linear-gradient(135deg, #6f4e37, #8b6b4d);
+  color: white;
+}
+
+.menu-table thead th {
+  padding: 12px 10px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+}
+
+.menu-table .drink-name-header {
   text-align: left;
+  padding-left: 15px;
+  min-width: 160px;
 }
 
-.drink-card:hover {
-  border-color: #6f4e37;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.menu-table .size-header {
+  min-width: 100px;
 }
 
-.drink-card.selected {
-  border-color: #6f4e37;
-  background: #f8f4e9;
-  box-shadow: 0 0 0 3px rgba(111, 78, 55, 0.2);
+.menu-table .price-sub {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  opacity: 0.85;
+  margin-top: 2px;
 }
 
-.drink-name {
+/* Table Body - Drink Rows */
+.drink-row {
+  border-bottom: 1px solid #f0ece6;
+  transition: background-color 0.2s ease;
+}
+
+.drink-row:hover {
+  background-color: #faf8f5;
+}
+
+.drink-row:last-child {
+  border-bottom: none;
+}
+
+/* Drink Name Cell */
+.drink-name-cell {
+  padding: 14px 15px;
   font-weight: 600;
   font-size: 1.05rem;
   color: #2c2c2c;
-  margin-bottom: 0.3rem;
+  white-space: nowrap;
 }
 
-.drink-prices {
+/* Size Cells */
+.size-cell {
+  padding: 8px 5px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* ===== SIZE OPTION STYLES ===== */
+.size-option {
   display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
-.price-tag {
+/* "+" Add Button */
+.add-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #d4c5b8;
+  background: white;
+  color: #6f4e37;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  user-select: none;
+}
+
+.add-btn:hover {
+  border-color: #6f4e37;
+  background: #6f4e37;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(111, 78, 55, 0.3);
+}
+
+.add-btn:active {
+  transform: scale(0.95);
+}
+
+/* Add button with quantity */
+.add-btn.has-quantity {
+  border-color: #4CAF50;
+  background: #4CAF50;
+  color: white;
+}
+
+.add-btn.has-quantity:hover {
+  background: #45a049;
+  border-color: #45a049;
+}
+
+/* Quantity Badge */
+.quantity-badge {
+  background: #4CAF50;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Price display */
+.size-price {
   font-size: 0.85rem;
-  color: #666;
-  background: #f5f5f5;
-  padding: 0.1rem 0.5rem;
-  border-radius: 4px;
+  color: #888;
+  min-width: 45px;
+  text-align: left;
 }
 
-@media (max-width: 600px) {
-  .drink-grid {
-    grid-template-columns: 1fr;
+/* ===== MENU TIP ===== */
+.menu-tip {
+  margin-top: 1rem;
+  padding: 0.8rem 1rem;
+  background: #f8f4e9;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #666;
+  text-align: center;
+}
+
+.menu-tip strong {
+  color: #6f4e37;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .drink-menu {
+    padding: 1rem;
+  }
+  
+  .menu-table .drink-name-header {
+    min-width: 120px;
+  }
+  
+  .menu-table .size-header {
+    min-width: 75px;
+    font-size: 0.85rem;
+  }
+  
+  .drink-name-cell {
+    font-size: 0.9rem;
+    padding: 10px 10px;
+  }
+  
+  .add-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+  }
+  
+  .size-price {
+    font-size: 0.75rem;
+    min-width: 35px;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-table {
+    min-width: 400px;
+  }
+  
+  .menu-table thead th {
+    padding: 8px 5px;
+    font-size: 0.75rem;
+  }
+  
+  .drink-name-cell {
+    font-size: 0.8rem;
+    padding: 8px 5px;
+  }
+  
+  .add-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+  }
+  
+  .size-price {
+    font-size: 0.7rem;
+    min-width: 30px;
+  }
+  
+  .quantity-badge {
+    font-size: 0.6rem;
+    min-width: 16px;
+    height: 16px;
   }
 }
