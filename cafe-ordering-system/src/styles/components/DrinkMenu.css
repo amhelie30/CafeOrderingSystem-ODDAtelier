@@ -1,5 +1,5 @@
 /**
- * DrinkMenu.css - Styles for the table-based drink menu
+ * DrinkMenu.css - Complete styles for the drink menu
  */
 
 .drink-menu {
@@ -29,9 +29,22 @@
   width: 100%;
   border-collapse: collapse;
   min-width: 500px;
+  table-layout: fixed;
 }
 
-/* Table Header */
+/* ===== COLUMN WIDTHS ===== */
+.menu-table .drink-name-header {
+  width: 30%;
+  text-align: left;
+  padding-left: 15px;
+}
+
+.menu-table .size-header {
+  width: 23.33%;
+  text-align: center;
+}
+
+/* ===== TABLE HEADER ===== */
 .menu-table thead {
   background: linear-gradient(135deg, #6f4e37, #8b6b4d);
   color: white;
@@ -45,16 +58,6 @@
   letter-spacing: 0.5px;
 }
 
-.menu-table .drink-name-header {
-  text-align: left;
-  padding-left: 15px;
-  min-width: 160px;
-}
-
-.menu-table .size-header {
-  min-width: 100px;
-}
-
 .menu-table .price-sub {
   display: block;
   font-size: 0.75rem;
@@ -63,48 +66,62 @@
   margin-top: 2px;
 }
 
-/* Table Body - Drink Rows */
-.drink-row {
+/* ===== TABLE BODY ===== */
+.menu-table tbody tr {
   border-bottom: 1px solid #f0ece6;
   transition: background-color 0.2s ease;
 }
 
-.drink-row:hover {
+.menu-table tbody tr:hover {
   background-color: #faf8f5;
 }
 
-.drink-row:last-child {
+.menu-table tbody tr:last-child {
   border-bottom: none;
 }
 
-/* Drink Name Cell */
+/* ===== DRINK NAME CELL ===== */
 .drink-name-cell {
   padding: 14px 15px;
   font-weight: 600;
   font-size: 1.05rem;
   color: #2c2c2c;
   white-space: nowrap;
+  vertical-align: middle;
+  width: 30%;
 }
 
-/* Size Cells */
+/* ===== SIZE CELLS ===== */
 .size-cell {
-  padding: 8px 5px;
+  padding: 10px 5px;
   text-align: center;
   vertical-align: middle;
+  width: 23.33%;
+  height: 65px;
+  position: relative;
 }
 
-/* ===== SIZE OPTION STYLES ===== */
+/* ===== SIZE OPTION ===== */
 .size-option {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 10px;
+  height: 45px;
+  min-height: 45px;
+  max-height: 45px;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  position: relative;
+  padding-right: 35px;
 }
 
-/* "+" Add Button */
+/* ===== ADD BUTTON ===== */
 .add-btn {
   width: 32px;
   height: 32px;
+  min-width: 32px;
+  max-width: 32px;
   border-radius: 50%;
   border: 2px solid #d4c5b8;
   background: white;
@@ -118,6 +135,9 @@
   justify-content: center;
   line-height: 1;
   user-select: none;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .add-btn:hover {
@@ -132,34 +152,100 @@
   transform: scale(0.95);
 }
 
-/* Add button with quantity */
-.add-btn.has-quantity {
-  border-color: #4CAF50;
-  background: #4CAF50;
-  color: white;
+/* ===== PRICE ===== */
+.size-price {
+  font-size: 0.85rem;
+  color: #555;
+  min-width: 50px;
+  width: 50px;
+  text-align: center;
+  font-weight: 500;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
 
-.add-btn.has-quantity:hover {
-  background: #45a049;
-  border-color: #45a049;
+/* ===== BADGE WRAPPER ===== */
+.badge-wrapper {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  z-index: 10;
+  pointer-events: none;
 }
 
-/* Quantity Badge */
+/* ===== QUANTITY BADGE ===== */
 .quantity-badge {
   background: #4CAF50;
   color: white;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  min-width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  min-height: 22px;
+  max-width: 22px;
+  max-height: 22px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 5px;
+  padding: 0;
   animation: popIn 0.3s ease;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+  pointer-events: none;
 }
 
+/* ===== CANCEL "✕" BUTTON ===== */
+.badge-cancel-btn {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  max-width: 16px;
+  max-height: 16px;
+  border-radius: 50%;
+  border: 2px solid #a5d6a7;
+  background: white;
+  color: #66bb6a;
+  font-size: 10px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  animation: fadeIn 0.3s ease;
+  box-shadow: 0 2px 6px rgba(102, 187, 106, 0.2);
+  z-index: 20;
+  pointer-events: auto;
+}
+
+.badge-cancel-btn:hover {
+  background: #66bb6a;
+  color: white;
+  transform: scale(1.15);
+  border-color: #4caf50;
+  box-shadow: 0 4px 12px rgba(102, 187, 106, 0.4);
+}
+
+.badge-cancel-btn:active {
+  transform: scale(0.9);
+}
+
+/* ===== ANIMATIONS ===== */
 @keyframes popIn {
   0% {
     transform: scale(0);
@@ -174,12 +260,15 @@
   }
 }
 
-/* Price display */
-.size-price {
-  font-size: 0.85rem;
-  color: #888;
-  min-width: 45px;
-  text-align: left;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* ===== MENU TIP ===== */
@@ -204,11 +293,11 @@
   }
   
   .menu-table .drink-name-header {
-    min-width: 120px;
+    width: 25%;
   }
   
   .menu-table .size-header {
-    min-width: 75px;
+    width: 25%;
     font-size: 0.85rem;
   }
   
@@ -217,15 +306,60 @@
     padding: 10px 10px;
   }
   
+  .size-cell {
+    padding: 8px 5px;
+    height: 55px;
+  }
+  
+  .size-option {
+    height: 40px;
+    min-height: 40px;
+    max-height: 40px;
+    gap: 8px;
+    padding-right: 30px;
+  }
+  
   .add-btn {
     width: 28px;
     height: 28px;
+    min-width: 28px;
+    max-width: 28px;
     font-size: 16px;
   }
   
   .size-price {
-    font-size: 0.75rem;
-    min-width: 35px;
+    font-size: 0.8rem;
+    min-width: 40px;
+    width: 40px;
+  }
+  
+  .badge-wrapper {
+    width: 28px;
+    height: 28px;
+    right: 6px;
+  }
+  
+  .quantity-badge {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    font-size: 0.7rem;
+  }
+  
+  .badge-cancel-btn {
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+    min-height: 14px;
+    max-width: 14px;
+    max-height: 14px;
+    font-size: 8px;
+    top: -3px;
+    right: -3px;
+    border-width: 2px;
   }
 }
 
@@ -244,20 +378,59 @@
     padding: 8px 5px;
   }
   
+  .size-cell {
+    padding: 6px 3px;
+    height: 48px;
+  }
+  
+  .size-option {
+    height: 35px;
+    min-height: 35px;
+    max-height: 35px;
+    gap: 6px;
+    padding-right: 25px;
+  }
+  
   .add-btn {
     width: 24px;
     height: 24px;
+    min-width: 24px;
+    max-width: 24px;
     font-size: 14px;
   }
   
   .size-price {
     font-size: 0.7rem;
-    min-width: 30px;
+    min-width: 32px;
+    width: 32px;
+  }
+  
+  .badge-wrapper {
+    width: 24px;
+    height: 24px;
+    right: 4px;
   }
   
   .quantity-badge {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    min-height: 18px;
+    max-width: 18px;
+    max-height: 18px;
     font-size: 0.6rem;
-    min-width: 16px;
-    height: 16px;
+  }
+  
+  .badge-cancel-btn {
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+    min-height: 12px;
+    max-width: 12px;
+    max-height: 12px;
+    font-size: 7px;
+    top: -2px;
+    right: -2px;
+    border-width: 1.5px;
   }
 }
