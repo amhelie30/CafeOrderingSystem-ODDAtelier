@@ -1,15 +1,6 @@
 /**
  * App.js - Main component that orchestrates the entire cafe ordering system
- * This component manages state and coordinates all child components
- * 
- * State Management:
- * - selectedDrink: Index of selected drink (null if none)
- * - selectedSize: Index of selected size (null if none)
- * - selectedCustomer: Index of selected customer type (0-3)
- * - selectedAddOns: Array of selected add-on indices
- * - orders: Array of all placed orders
- * - grandTotal: Cumulative total of all orders
- * - showSuccess: Boolean to show success message
+ * Updated to work with the new table-based drink menu
  */
 
 import React, { useState } from 'react';
@@ -17,7 +8,6 @@ import './App.css';
 
 // Import components
 import DrinkMenu from './components/DrinkMenu';
-import SizeSelector from './components/SizeSelector';
 import CustomerType from './components/CustomerType';
 import AddOnSelector from './components/AddOnSelector';
 import OrderSummary from './components/OrderSummary';
@@ -32,23 +22,55 @@ function App() {
   // === STATE MANAGEMENT ===
   const [selectedDrink, setSelectedDrink] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
-  const [selectedCustomer, setSelectedCustomer] = useState(0); // Default: Regular
+  const [selectedCustomer, setSelectedCustomer] = useState(0);
   const [selectedAddOns, setSelectedAddOns] = useState([]);
   const [orders, setOrders] = useState([]);
   const [grandTotal, setGrandTotal] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
 
+  // === NEW: Handle adding a drink+size to order ===
+  const handleAddToOrder = ({ drinkIndex, sizeIndex, drinkName, sizeName, price }) => {
+    // Set the current selection for the order summary
+    setSelectedDrink(drinkIndex);
+    setSelectedSize(sizeIndex);
+    
+    // Automatically place the order after a brief delay
+    // This creates a smooth experience where clicking "+" adds to cart
+    setTimeout(() => {
+      // Check if a customer type is selected
+      const totals = calculateOrderTotal(
+        drinkIndex,
+        sizeIndex,
+        selectedAddOns,
+        drinkPrices,
+        addOnPrices,
+        selectedCustomer
+      );
+
+      const newOrder = {
+        drink: drinkName,
+        size: sizeName,
+        customerType: customerTypes[selectedCustomer],
+        addOns: selectedAddOns.map(index => addOnNames[index]),
+        total: totals.total
+      };
+
+      setOrders(prev => [...prev, newOrder]);
+      setGrandTotal(prev => prev + totals.total);
+      setShowSuccess(true);
+
+      // Reset selections (but keep customer type)
+      setSelectedDrink(null);
+      setSelectedSize(null);
+      setSelectedAddOns([]);
+
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 2000);
+    }, 100);
+  };
+
   // === EVENT HANDLERS ===
-  const handleSelectDrink = (index) => {
-    setSelectedDrink(index);
-    setShowSuccess(false);
-  };
-
-  const handleSelectSize = (index) => {
-    setSelectedSize(index);
-    setShowSuccess(false);
-  };
-
   const handleSelectCustomer = (index) => {
     setSelectedCustomer(index);
     setShowSuccess(false);
@@ -63,52 +85,6 @@ function App() {
       }
     });
     setShowSuccess(false);
-  };
-
-  /**
-   * handlePlaceOrder - Places the current order
-   * This function mirrors the logic from your Java console application
-   */
-  const handlePlaceOrder = () => {
-    // Validate that a drink and size are selected
-    if (!isValidOrder(selectedDrink, selectedSize)) {
-      alert('Please select a drink and size first!');
-      return;
-    }
-
-    // Calculate the order total
-    const totals = calculateOrderTotal(
-      selectedDrink,
-      selectedSize,
-      selectedAddOns,
-      drinkPrices,
-      addOnPrices,
-      selectedCustomer
-    );
-
-    // Create order object
-    const newOrder = {
-      drink: drinkNames[selectedDrink],
-      size: sizeNames[selectedSize],
-      customerType: customerTypes[selectedCustomer],
-      addOns: selectedAddOns.map(index => addOnNames[index]),
-      total: totals.total
-    };
-
-    // Update orders list and grand total
-    setOrders(prev => [...prev, newOrder]);
-    setGrandTotal(prev => prev + totals.total);
-    setShowSuccess(true);
-
-    // Reset selections (except customer type)
-    setSelectedDrink(null);
-    setSelectedSize(null);
-    setSelectedAddOns([]);
-
-    // Hide success message after 3 seconds
-    setTimeout(() => {
-      setShowSuccess(false);
-    }, 3000);
   };
 
   const handleReset = () => {
@@ -127,22 +103,15 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>☕ The ODD Atelier</h1>
+        <h1>☕ Brew Haven Cafe</h1>
         <p className="subtitle">Order your favorite drinks with custom add-ons</p>
       </header>
 
       <div className="main-content">
         {/* LEFT PANEL: Selection Area */}
         <div className="left-panel">
-          <DrinkMenu 
-            selectedDrink={selectedDrink} 
-            onSelectDrink={handleSelectDrink} 
-          />
-          
-          <SizeSelector 
-            selectedSize={selectedSize} 
-            onSelectSize={handleSelectSize} 
-          />
+          {/* NEW: DrinkMenu with integrated size selection */}
+          <DrinkMenu onAddToOrder={handleAddToOrder} />
           
           <CustomerType 
             selectedCustomer={selectedCustomer} 
@@ -157,23 +126,16 @@ function App() {
           {/* Action Buttons */}
           <div className="action-buttons">
             <button 
-              className="place-order-btn" 
-              onClick={handlePlaceOrder}
-              disabled={!isValidOrder(selectedDrink, selectedSize)}
-            >
-              🛒 Place Order
-            </button>
-            <button 
               className="reset-btn" 
               onClick={handleReset}
             >
-              🔄 Reset All
+              🔄 Reset All Orders
             </button>
           </div>
 
           {showSuccess && (
             <div className="success-message">
-              ✅ Order placed successfully!
+              ✅ Item added to your order!
             </div>
           )}
         </div>
@@ -199,7 +161,7 @@ function App() {
       </div>
 
       <footer className="app-footer">
-        <p>Made with ❤️ | Cafe Ordering System</p>
+        <p>Made with ❤️ | Brew Haven Cafe</p>
       </footer>
     </div>
   );
