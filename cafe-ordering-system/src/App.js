@@ -200,7 +200,7 @@ function App() {
       </div>
 
       <footer className="app-footer">
-        <p>Made with ❤️ | Brew Haven Cafe</p>
+        <p>Made with ❤️ | The ODD Atelier</p>
       </footer>
     </div>
   );

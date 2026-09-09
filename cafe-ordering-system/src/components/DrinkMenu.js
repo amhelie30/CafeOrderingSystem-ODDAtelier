@@ -123,8 +123,7 @@ function DrinkMenu({ onAddToOrder, onRemoveFromOrder }) {
       </div>
 
       <div className="menu-tip">
-        💡 Click <strong>+</strong> to add, click the <strong>✕</strong> on the badge to cancel all orders for that size
-      </div>
+        💡 Click <strong>+</strong> to add more.
     </div>
   );
 }
