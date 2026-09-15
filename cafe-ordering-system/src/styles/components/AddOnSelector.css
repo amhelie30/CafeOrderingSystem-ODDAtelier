@@ -224,11 +224,62 @@
 }
 
 /* ===== POPUP FOOTER ===== */
+/* ===== POPUP FOOTER (Two Buttons) ===== */
 .addon-popup-footer {
   display: flex;
   justify-content: center;
+  gap: 0.8rem;
   padding-top: 1rem;
   border-top: 2px solid #f0ece6;
+}
+
+/* ===== SKIP BUTTON ===== */
+.addon-popup-skip {
+  padding: 0.7rem 2rem;
+  background: white;
+  color: #888;
+  border: 2px solid #e8d5c4;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: inherit;
+}
+
+.addon-popup-skip:hover {
+  border-color: #bbb;
+  color: #555;
+  background: #f9f9f9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.addon-popup-skip:active {
+  transform: translateY(0);
+}
+
+/* ===== DONE BUTTON ===== */
+.addon-popup-done {
+  padding: 0.7rem 2rem;
+  background: linear-gradient(135deg, #6f4e37, #8b6b4d);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: inherit;
+}
+
+.addon-popup-done:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(111, 78, 55, 0.3);
+}
+
+.addon-popup-done:active {
+  transform: translateY(0);
 }
 
 .addon-popup-done {
