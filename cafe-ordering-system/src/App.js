@@ -1,5 +1,5 @@
 /**
- * App.js - Main component with per-order add-on handling
+ * App.js - Main component with per-order add-ons and soft-delete
  */
 
 import React, { useState } from 'react';
@@ -18,20 +18,28 @@ import { calculateOrderTotal } from './utils/calculations';
 function App() {
   const [selectedDrink, setSelectedDrink] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
-  const [selectedCustomer, setSelectedCustomer] = useState(0);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [deletedOrders, setDeletedOrders] = useState(new Set()); // ✅ Track soft-deleted IDs
   const [showSuccess, setShowSuccess] = useState(false);
-  const [resetKey, setResetKey] = useState(0); // ✅ NEW: Reset trigger
+  const [resetKey, setResetKey] = useState(0);
 
-  // ===== HELPER: Calculate Grand Total =====
+  // ===== HELPER: Calculate Grand Total (excludes deleted) =====
   const calculateGrandTotal = (orderList) => {
-    return orderList.reduce((sum, order) => sum + order.total, 0);
+    return orderList
+      .filter(order => !deletedOrders.has(order.id))
+      .reduce((sum, order) => sum + order.total, 0);
   };
+
+  // ===== HELPER: Count Active Orders (excludes deleted) =====
+  const activeOrderCount = orders.filter(o => !deletedOrders.has(o.id)).length;
 
   // ===== HANDLE ADD TO ORDER =====
   const handleAddToOrder = ({ drinkIndex, sizeIndex, drinkName, sizeName, price }) => {
     setSelectedDrink(drinkIndex);
     setSelectedSize(sizeIndex);
+    
+    const customerIndex = selectedCustomer ?? 0;
     
     const totals = calculateOrderTotal(
       drinkIndex,
@@ -39,7 +47,7 @@ function App() {
       [],
       drinkPrices,
       addOnPrices,
-      selectedCustomer
+      customerIndex
     );
 
     const newOrder = {
@@ -48,8 +56,8 @@ function App() {
       size: sizeName,
       drinkIndex: drinkIndex,
       sizeIndex: sizeIndex,
-      customerType: customerTypes[selectedCustomer],
-      customerIndex: selectedCustomer,
+      customerType: customerTypes[customerIndex],
+      customerIndex: customerIndex,
       addOns: [],
       addOnIndices: [],
       total: totals.total,
@@ -66,7 +74,7 @@ function App() {
     }, 2000);
   };
 
-  // ===== HANDLE CANCEL ORDER =====
+  // ===== HANDLE CANCEL ORDER (from DrinkMenu badge) =====
   const handleRemoveFromOrder = ({ drinkIndex, sizeIndex, removeAll }) => {
     let updatedOrders;
 
@@ -91,14 +99,15 @@ function App() {
 
   // ===== HANDLE TOGGLE ADD-ON FOR A SPECIFIC ORDER =====
   const handleToggleAddOnForOrder = (orderId, addOnIndex) => {
+    // Can't add add-ons to deleted orders
+    if (deletedOrders.has(orderId)) return;
+
     setOrders(prevOrders =>
       prevOrders.map(order => {
         if (order.id !== orderId) return order;
 
         const isSelected = order.addOnIndices.includes(addOnIndex);
-        const newAddOnIndices = isSelected
-          ? order.addOnIndices.filter(i => i !== addOnIndex)
-          : [...order.addOnIndices, addOnIndex];
+        const newAddOnIndices = isSelected ? [] : [addOnIndex];
 
         const totals = calculateOrderTotal(
           order.drinkIndex,
@@ -119,25 +128,49 @@ function App() {
     );
   };
 
+  // ===== HANDLE MARK ORDER AS DELETED (Soft Delete) =====
+  const handleMarkDeleted = (orderId) => {
+    setDeletedOrders(prev => {
+      const newSet = new Set(prev);
+      newSet.add(orderId);
+      return newSet;
+    });
+  };
+
+  // ===== HANDLE UNDO DELETE =====
+  const handleUndoDelete = (orderId) => {
+    setDeletedOrders(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(orderId);
+      return newSet;
+    });
+  };
+
+  // ===== HANDLE PERMANENT DELETE =====
+  const handlePermanentDelete = (orderId) => {
+    setOrders(prev => prev.filter(o => o.id !== orderId));
+    setDeletedOrders(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(orderId);
+      return newSet;
+    });
+  };
+
   // ===== EVENT HANDLERS =====
   const handleSelectCustomer = (index) => {
     setSelectedCustomer(index);
     setShowSuccess(false);
   };
 
-  // ===== HANDLE RESET (CLEARS EVERYTHING) =====
+  // ===== HANDLE RESET =====
   const handleReset = () => {
     if (window.confirm('Are you sure you want to reset all orders?')) {
-      // Clear all orders
       setOrders([]);
-      
-      // Reset selections
+      setDeletedOrders(new Set());
       setSelectedDrink(null);
       setSelectedSize(null);
-      setSelectedCustomer(0);
+      setSelectedCustomer(null);
       setShowSuccess(false);
-      
-      // ✅ NEW: Force DrinkMenu to reset its internal state
       setResetKey(prev => prev + 1);
     }
   };
@@ -147,13 +180,12 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>☕ Brew Haven Cafe</h1>
+        <h1>☕ The Odd Atelier</h1>
         <p className="subtitle">Order your favorite drinks with custom add-ons</p>
       </header>
 
       <div className="main-content">
         <div className="left-panel">
-          {/* ✅ NEW: Pass resetKey to DrinkMenu */}
           <DrinkMenu 
             key={resetKey}
             onAddToOrder={handleAddToOrder}
@@ -166,7 +198,7 @@ function App() {
           />
           
           <AddOnSelector 
-            orders={orders}
+            orders={orders.filter(o => !deletedOrders.has(o.id))}
             onToggleAddOnForOrder={handleToggleAddOnForOrder}
           />
 
@@ -193,17 +225,23 @@ function App() {
             addOnPrices={addOnPrices}
           />
 
-          <OrdersList orders={orders} />
+          <OrdersList 
+            orders={orders}
+            deletedOrders={deletedOrders}
+            onMarkDeleted={handleMarkDeleted}
+            onUndoDelete={handleUndoDelete}
+            onPermanentDelete={handlePermanentDelete}
+          />
 
           <GrandTotal 
             grandTotal={grandTotal} 
-            orderCount={orders.length} 
+            orderCount={activeOrderCount} 
           />
         </div>
       </div>
 
       <footer className="app-footer">
-        <p>Made with ❤️ | Brew Haven Cafe</p>
+        <p>Made with ❤️ | The Odd Atelier</p>
       </footer>
     </div>
   );
