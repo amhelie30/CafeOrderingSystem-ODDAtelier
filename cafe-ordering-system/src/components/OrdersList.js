@@ -1,5 +1,5 @@
 /**
- * OrdersList.js - Component for displaying all placed orders
+ * OrdersList.js - Shows all orders with their add-ons
  */
 
 import React from 'react';
