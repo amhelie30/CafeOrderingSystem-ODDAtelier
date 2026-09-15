@@ -19,11 +19,10 @@ function App() {
   const [selectedDrink, setSelectedDrink] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedCustomer, setSelectedCustomer] = useState(0);
-  const [selectedAddOns, setSelectedAddOns] = useState([]);
   const [orders, setOrders] = useState([]);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // ===== HELPER: Calculate Grand Total from Orders =====
+  // ===== HELPER: Calculate Grand Total =====
   const calculateGrandTotal = (orderList) => {
     return orderList.reduce((sum, order) => sum + order.total, 0);
   };
@@ -33,10 +32,11 @@ function App() {
     setSelectedDrink(drinkIndex);
     setSelectedSize(sizeIndex);
     
+    // Calculate with no add-ons initially (user will add later)
     const totals = calculateOrderTotal(
       drinkIndex,
       sizeIndex,
-      selectedAddOns,
+      [], // No add-ons at creation
       drinkPrices,
       addOnPrices,
       selectedCustomer
@@ -49,50 +49,35 @@ function App() {
       drinkIndex: drinkIndex,
       sizeIndex: sizeIndex,
       customerType: customerTypes[selectedCustomer],
-      addOns: selectedAddOns.map(index => addOnNames[index]),
-      addOnIndices: [...selectedAddOns],
+      customerIndex: selectedCustomer,
+      addOns: [],        // Empty array - user adds later
+      addOnIndices: [],  // Empty array - user adds later
       total: totals.total,
       price: price
     };
 
-    // Add the new order
-    const updatedOrders = [...orders, newOrder];
-    setOrders(updatedOrders);
-    
-    // ✅ Recalculate grand total from scratch
-    // This ensures the grand total always matches the sum of all orders
-    const newGrandTotal = calculateGrandTotal(updatedOrders);
-    
-    // We need to update GrandTotal component
-    // We'll use a ref or state to pass this down
-    // For now, we'll use the state setter
-
+    setOrders([...orders, newOrder]);
     setShowSuccess(true);
-
     setSelectedDrink(null);
     setSelectedSize(null);
-    setSelectedAddOns([]);
 
     setTimeout(() => {
       setShowSuccess(false);
     }, 2000);
   };
 
-  // ===== HANDLE CANCEL ORDER (REMOVE ALL) =====
+  // ===== HANDLE CANCEL ORDER =====
   const handleRemoveFromOrder = ({ drinkIndex, sizeIndex, removeAll }) => {
     let updatedOrders;
 
     if (removeAll) {
-      // Remove ALL orders with this drink+size combination
       updatedOrders = orders.filter(
         order => !(order.drinkIndex === drinkIndex && order.sizeIndex === sizeIndex)
       );
     } else {
-      // Single removal (for backward compatibility)
       const orderIndex = orders.findLastIndex(
         order => order.drinkIndex === drinkIndex && order.sizeIndex === sizeIndex
       );
-
       if (orderIndex !== -1) {
         updatedOrders = [...orders];
         updatedOrders.splice(orderIndex, 1);
@@ -101,11 +86,39 @@ function App() {
       }
     }
 
-    // ✅ Update orders and recalculate grand total
     setOrders(updatedOrders);
-    
-    // Grand total will be recalculated in the GrandTotal component
-    // We pass orders and it calculates the sum
+  };
+
+  // ===== HANDLE TOGGLE ADD-ON FOR A SPECIFIC ORDER =====
+  const handleToggleAddOnForOrder = (orderId, addOnIndex) => {
+    setOrders(prevOrders =>
+      prevOrders.map(order => {
+        if (order.id !== orderId) return order;
+
+        // Toggle the add-on
+        const isSelected = order.addOnIndices.includes(addOnIndex);
+        const newAddOnIndices = isSelected
+          ? order.addOnIndices.filter(i => i !== addOnIndex)
+          : [...order.addOnIndices, addOnIndex];
+
+        // Recalculate totals for this order
+        const totals = calculateOrderTotal(
+          order.drinkIndex,
+          order.sizeIndex,
+          newAddOnIndices,
+          drinkPrices,
+          addOnPrices,
+          order.customerIndex
+        );
+
+        return {
+          ...order,
+          addOnIndices: newAddOnIndices,
+          addOns: newAddOnIndices.map(i => addOnNames[i]),
+          total: totals.total
+        };
+      })
+    );
   };
 
   // ===== EVENT HANDLERS =====
@@ -114,36 +127,22 @@ function App() {
     setShowSuccess(false);
   };
 
-  const handleToggleAddOn = (index) => {
-    setSelectedAddOns(prev => {
-      if (prev.includes(index)) {
-        return prev.filter(i => i !== index);
-      } else {
-        return [...prev, index];
-      }
-    });
-    setShowSuccess(false);
-  };
-
   const handleReset = () => {
     if (window.confirm('Are you sure you want to reset all orders?')) {
       setOrders([]);
       setSelectedDrink(null);
       setSelectedSize(null);
-      setSelectedAddOns([]);
       setSelectedCustomer(0);
       setShowSuccess(false);
     }
   };
 
-  // ===== RECALCULATE GRAND TOTAL =====
   const grandTotal = calculateGrandTotal(orders);
 
-  // ===== RENDER =====
   return (
     <div className="app">
       <header className="app-header">
-        <h1>☕ The ODD Atelier </h1>
+        <h1>☕ Brew Haven Cafe</h1>
         <p className="subtitle">Order your favorite drinks with custom add-ons</p>
       </header>
 
@@ -159,16 +158,14 @@ function App() {
             onSelectCustomer={handleSelectCustomer} 
           />
           
+          {/* NEW: AddOnSelector now shows orders and popup */}
           <AddOnSelector 
-            selectedAddOns={selectedAddOns} 
-            onToggleAddOn={handleToggleAddOn} 
+            orders={orders}
+            onToggleAddOnForOrder={handleToggleAddOnForOrder}
           />
 
           <div className="action-buttons">
-            <button 
-              className="reset-btn" 
-              onClick={handleReset}
-            >
+            <button className="reset-btn" onClick={handleReset}>
               🔄 Reset All Orders
             </button>
           </div>
@@ -184,7 +181,7 @@ function App() {
           <OrderSummary 
             selectedDrink={selectedDrink}
             selectedSize={selectedSize}
-            selectedAddOns={selectedAddOns}
+            selectedAddOns={[]}
             selectedCustomer={selectedCustomer}
             drinkPrices={drinkPrices}
             addOnPrices={addOnPrices}
@@ -200,7 +197,7 @@ function App() {
       </div>
 
       <footer className="app-footer">
-        <p>Made with ❤️ | The ODD Atelier</p>
+        <p>Made with ❤️ | Brew Haven Cafe</p>
       </footer>
     </div>
   );
