@@ -1,5 +1,5 @@
 /**
- * App.js - Main component with complete order management
+ * App.js - Main component with per-order add-on handling
  */
 
 import React, { useState } from 'react';
@@ -21,6 +21,7 @@ function App() {
   const [selectedCustomer, setSelectedCustomer] = useState(0);
   const [orders, setOrders] = useState([]);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [resetKey, setResetKey] = useState(0); // ✅ NEW: Reset trigger
 
   // ===== HELPER: Calculate Grand Total =====
   const calculateGrandTotal = (orderList) => {
@@ -32,11 +33,10 @@ function App() {
     setSelectedDrink(drinkIndex);
     setSelectedSize(sizeIndex);
     
-    // Calculate with no add-ons initially (user will add later)
     const totals = calculateOrderTotal(
       drinkIndex,
       sizeIndex,
-      [], // No add-ons at creation
+      [],
       drinkPrices,
       addOnPrices,
       selectedCustomer
@@ -50,8 +50,8 @@ function App() {
       sizeIndex: sizeIndex,
       customerType: customerTypes[selectedCustomer],
       customerIndex: selectedCustomer,
-      addOns: [],        // Empty array - user adds later
-      addOnIndices: [],  // Empty array - user adds later
+      addOns: [],
+      addOnIndices: [],
       total: totals.total,
       price: price
     };
@@ -95,13 +95,11 @@ function App() {
       prevOrders.map(order => {
         if (order.id !== orderId) return order;
 
-        // Toggle the add-on
         const isSelected = order.addOnIndices.includes(addOnIndex);
         const newAddOnIndices = isSelected
           ? order.addOnIndices.filter(i => i !== addOnIndex)
           : [...order.addOnIndices, addOnIndex];
 
-        // Recalculate totals for this order
         const totals = calculateOrderTotal(
           order.drinkIndex,
           order.sizeIndex,
@@ -127,13 +125,20 @@ function App() {
     setShowSuccess(false);
   };
 
+  // ===== HANDLE RESET (CLEARS EVERYTHING) =====
   const handleReset = () => {
     if (window.confirm('Are you sure you want to reset all orders?')) {
+      // Clear all orders
       setOrders([]);
+      
+      // Reset selections
       setSelectedDrink(null);
       setSelectedSize(null);
       setSelectedCustomer(0);
       setShowSuccess(false);
+      
+      // ✅ NEW: Force DrinkMenu to reset its internal state
+      setResetKey(prev => prev + 1);
     }
   };
 
@@ -148,7 +153,9 @@ function App() {
 
       <div className="main-content">
         <div className="left-panel">
+          {/* ✅ NEW: Pass resetKey to DrinkMenu */}
           <DrinkMenu 
+            key={resetKey}
             onAddToOrder={handleAddToOrder}
             onRemoveFromOrder={handleRemoveFromOrder}
           />
@@ -158,7 +165,6 @@ function App() {
             onSelectCustomer={handleSelectCustomer} 
           />
           
-          {/* NEW: AddOnSelector now shows orders and popup */}
           <AddOnSelector 
             orders={orders}
             onToggleAddOnForOrder={handleToggleAddOnForOrder}
