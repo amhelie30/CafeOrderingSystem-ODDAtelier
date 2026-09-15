@@ -1,10 +1,5 @@
 /**
  * AddOnSelector.js - Displays all orders; clicking opens add-on popup
- * 
- * Features:
- * - Shows list of all individual orders
- * - Click an order → opens popup with add-on options
- * - Add-ons toggle on/off per order
  */
 
 import React, { useState } from 'react';
@@ -12,23 +7,18 @@ import { addOnNames, addOnPrices } from '../data/menuData';
 import '../styles/components/AddOnSelector.css';
 
 function AddOnSelector({ orders, onToggleAddOnForOrder }) {
-  // Which order is currently open in the popup
   const [activeOrderId, setActiveOrderId] = useState(null);
 
-  // Find the active order object
   const activeOrder = orders.find(o => o.id === activeOrderId);
 
-  // Open popup for an order
   const openPopup = (orderId) => {
     setActiveOrderId(orderId);
   };
 
-  // Close popup
   const closePopup = () => {
     setActiveOrderId(null);
   };
 
-  // Handle add-on click (toggle)
   const handleAddOnClick = (addOnIndex) => {
     if (activeOrderId !== null) {
       onToggleAddOnForOrder(activeOrderId, addOnIndex);
@@ -41,7 +31,7 @@ function AddOnSelector({ orders, onToggleAddOnForOrder }) {
       <div className="addon-selector">
         <h2 className="section-title">Customize Your Orders</h2>
         <div className="empty-state">
-          <p>No orders yet — add a drink first to customize add-ons</p>
+          <p>Please select your order/s to customize add-on/s</p>
         </div>
       </div>
     );
@@ -151,9 +141,18 @@ function AddOnSelector({ orders, onToggleAddOnForOrder }) {
               </button>
             </div>
 
-            {/* Footer */}
+            {/* ✅ Footer with Skip and Done buttons */}
             <div className="addon-popup-footer">
-              <button className="addon-popup-done" onClick={closePopup}>
+              <button 
+                className="addon-popup-skip" 
+                onClick={closePopup}
+              >
+                Skip
+              </button>
+              <button 
+                className="addon-popup-done" 
+                onClick={closePopup}
+              >
                 Done
               </button>
             </div>
